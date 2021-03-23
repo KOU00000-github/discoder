@@ -40,86 +40,97 @@ example
 > npm Install --save discoder
 ```
 
+## Environment
+ - need discord bot and its token
+
 ## How to use
 
+### step1
+Generate DB Object
 ```js
-(async function(){
- 
-    const cloud = require('discloud');
-    const DB = new cloud;
- 
-    /**
-     * How to set when DB is generated
-     * -It can also be set using DB.setting()
-     */
-    const DB = new cloud({
-        encode:{//encode settings
-            use:true,//encode = on
-            key:{
-                keyA:"(32 alphanumeric characters)",
-                keyB:"(16 alphanumeric characters)"
-            }
-        },
-        token:"Your token is here",
-        server:"Your Server ID (This server id's server will be a database)"
-    });
- 
-    /**
-     * How to use encode
-     */
-    DB.encodOn();//Turn on encoding
-    DB.setKey("(32 alphanumeric characters)","(16 alphanumeric characters)");//set key
- 
-    const client = await DB.create("Your token is here",{
-        server:"Your Server ID (This server id's server will be a database)",
-        //DB.setServer("ID");//You can also set this way
-        name:"DataTable's name"
-    },
-    {}//The value to be set first when creating db
-    );
+    //read this package
+const cloud = require('discoder');
+    //Generate DB Object
+const DB = new cloud()
+```
+### step2
+Database setting
+<details><summary>if you need cryption</summary><div>
+
+```js
+//Turn on crypt
+DB.encodOn();
+//setkeys
+DB.setKey("(32 alphanumeric characters)","(16 alphanumeric characters)");
+```
+
+</div></details>
+
+Generate DB client
+```js
+//Generate client
+const client = await DB.create("Your token is here",{
+    server:"Your Server ID for database",
+    name:"DataTable name"
+},{} //<--- Value for the first time
+);
+```
+
+### tep4
+
+```js
+
     client.on('error',err=>{
-        console.log(err.message);//throw client's error here
+        console.log(err.message);//throw client's error
     })
     client.on('ready',async ()=>{//client ready
         console.log('ready...');
+
  
         /**
          * Emphasis is placed on efficiency and safety.
          * The method that directly operates the DB is
          * Only set, get and create are available.
-         * Other methods to change settings (such as switching encryption)
-         * There is.
          */
-        await DB.set("text")//set data in database
+        await DB.set("text")//set "text" on database
         .then(async()=>{
             console.log(await DB.get())
-            //text
+            //stdout: "text"
         }); 
+
+
         /**
          * Notify when data set is complete
          */
         client.on('set',data=>{
             data = data[0];//main content (data[1] is this process's key)
             console.log(data.processTime);//Time it took to set
-            console.log(data.setData);//Seted data
-            console.log(data.info);// = DB.info()
+            console.log(data.setData);//Setted data
+
+            //get client infomations by
+            console.log(data.info);
+            // OR //
+            DB.info();
         });
+        
+        /**
+         * Notify when data get is complete
+         */
         client.on('get',data=>{
-            var info = data[0];
-            //main content
-            var key = data[1];
-            //this process's key
+            var info = data[0]; //main content
+            var key = data[1]; //this process's key
         });
+
         /**
          * Notify once when nothing is written.
          */
         client.once('writeEnd',async ()=>{
             console.log(await DB.get());
         });
- 
-        DB.info();
-        //You can get Your DB's infomations
+        
     });
+
+
 })();
 ```
 
