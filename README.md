@@ -77,61 +77,81 @@ const client = await DB.create("Your token is here",{
 ```
 
 ### tep4
+use database
 
+- Usage
 ```js
+    /**
+     * Since it processes asynchronously, 
+     * the program shold write in an asynchronous function.
+     */
+(async()=>{
+    /**
+     * write in here.
+     */
+})()
+```
+- Event
+```js
+//on client ready
+client.on('ready',async ()=>{
+    console.log('ready...');
+        /**
+         * The program that operates the database shold write in here.
+         */
+})
 
-    client.on('error',err=>{
-        console.log(err.message);//throw client's error
-    })
-    client.on('ready',async ()=>{//client ready
-        console.log('ready...');
+//on client's error
+client.on('error',err=>{
+    console.log(err.message);
+});
 
- 
+        /**
+         * Notify when data set is complete
+         */
+client.on('set',data=>{
+    data = data[0];//main content (data[1] is this process's key)
+    console.log(data.processTime);//Time it took to set
+    console.log(data.setData);//Setted data
+    
+    //get client infomations by
+    console.log(data.info);
+    // OR //
+    DB.info();
+});
+        
+        /**
+         * Notify when data get is complete
+         */
+client.on('get',data=>{
+    var info = data[0]; //main content
+    var key = data[1]; //this process's key
+});
+
+        /**
+         * Notify once when nothing is written.
+         */
+client.once('writeEnd',async ()=>{
+    console.log(await DB.get());
+});
+```
+- Database operation
+```js
         /**
          * Emphasis is placed on efficiency and safety.
          * The method that directly operates the DB is
          * Only set, get and create are available.
          */
-        await DB.set("text")//set "text" on database
-        .then(async()=>{
-            console.log(await DB.get())
-            //stdout: "text"
-        }); 
+         
+//set
+await DB.set("text")//set "text" on database
+.then(async()=>{
+    console.log(await DB.get())
+    //stdout: "text"
+}); 
 
-
-        /**
-         * Notify when data set is complete
-         */
-        client.on('set',data=>{
-            data = data[0];//main content (data[1] is this process's key)
-            console.log(data.processTime);//Time it took to set
-            console.log(data.setData);//Setted data
-
-            //get client infomations by
-            console.log(data.info);
-            // OR //
-            DB.info();
-        });
-        
-        /**
-         * Notify when data get is complete
-         */
-        client.on('get',data=>{
-            var info = data[0]; //main content
-            var key = data[1]; //this process's key
-        });
-
-        /**
-         * Notify once when nothing is written.
-         */
-        client.once('writeEnd',async ()=>{
-            console.log(await DB.get());
-        });
-        
-    });
-
-
-})();
+//get
+console.log(await DB.get())
 ```
 
 ## License
