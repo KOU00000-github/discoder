@@ -22,10 +22,15 @@
 1. Make npm commands available
 [install with node.js](https://nodejs.org/en/download/ "nodejs")
 2. Move to the location you want to install.
+
 format
+
 `> cd <directory path>`
+
 example
+
 `> cd C:/Users/DISCORD/Desktop/project/`
+
 
 </div></details>
 
